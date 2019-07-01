@@ -1,4 +1,4 @@
-﻿namespace Aan.Infrastructure.EntityFramework
+﻿namespace BookRec.Infrastructure.EntityFramework
 {
     using BookRec.Infrastructure.EntityFramework.Context;
     using BookRec.Infrastructure.EntityFramework.Repositories;
@@ -9,7 +9,7 @@
     public static partial class ServiceRegistrations
     {
         /// <summary>
-        /// Adds Aan Repositories
+        /// Adds BookRec Repositories
         /// </summary>
         /// <param name="services">The services</param>
         /// <returns>Service Collection</returns>
@@ -17,15 +17,15 @@
         {
             services.TryAddScoped<IBookRepository>(sp =>
             {
-                //var context = sp.GetService<AanContext>();
-                return new BookRepository();
+                var context = sp.GetService<BookRecContext>();
+                return new BookRepository(context);
             });
 
             return services;
         }
 
         /// <summary>
-        /// Adds Aan database
+        /// Adds BookRec database
         /// </summary>
         /// <param name="services">The services</param>
         /// <returns>Service Collection</returns>

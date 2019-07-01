@@ -1,7 +1,7 @@
 ﻿namespace BookRec.Infrastructure.EntityFramework.Context
 {
-    using Models;
     using Microsoft.EntityFrameworkCore;
+    using Models;
 
     public static partial class Extensions
     {
@@ -9,7 +9,8 @@
         {
             modelBuilder.Entity<Book>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedOnAdd().IsRequired();
+                entity.Property(e => e.Id).IsRequired();
+                entity.Property(e => e.Title).IsRequired();
             });
 
             return modelBuilder;

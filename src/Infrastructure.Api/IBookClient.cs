@@ -6,6 +6,6 @@
 
     public interface IBookClient
     {
-        Task<IEnumerable<Book>> GetBooksAsync(string query);
+        Task<IEnumerable<Book>> GetBooksAsync(string query, int page, int maxItems = 40);
     }
 }

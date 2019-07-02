@@ -23,13 +23,7 @@
                 .BuildServiceProvider();
 
             Console.WriteLine("Start!!!");
-
-            var query = string.Empty;
-            while(!query.Equals("exit", StringComparison.OrdinalIgnoreCase))
-            {
-                query = Console.ReadLine();
-                await BookMigration.StartAsync(query, serviceProvider).ConfigureAwait(false);
-            }
+            await BookMigration.StartAsync(serviceProvider).ConfigureAwait(false);
         }
     }
 }

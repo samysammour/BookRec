@@ -43,6 +43,12 @@
             return await this.dbContext.Books.FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public async Task<Book> GetByTitleAsync(string title)
+        {
+            EnsureArg.IsNotNull<string>(title);
+            return await this.dbContext.Books.FirstOrDefaultAsync(x => x.Title == title);
+        }
+
         public async Task<Book> InsertAsync(Book model)
         {
             EnsureArg.IsNotNull<Book>(model);

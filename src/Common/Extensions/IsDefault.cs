@@ -4,24 +4,6 @@
 
     public static partial class Extensions
     {
-        //// <summary>
-        //// Determines whether [is default].
-        //// </summary>
-        //// <typeparam name="T"></typeparam>
-        //// <param name="source">The value.</param>
-        //// <returns>
-        ////   <c>true</c> if [is null or default] [the specified value]; otherwise, <c>false</c>.
-        //// </returns>
-        //public static bool IsDefault<T>(this T source)
-        //{
-        //    if (typeof(T).IsValueType)
-        //    {
-        //        return source == Activator.CreateInstance(typeof(T));
-        //    }
-
-        //    return EqualityComparer<T>.Default.Equals(source, default);
-        //}
-
         public static bool IsDefault(this object source)
         {
             if (source?.GetType().IsValueType == true)

@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Infrastructure.Api\Infrastructure.Api.csproj" />
     <ProjectReference Include="..\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj" />
+    <ProjectReference Include="..\Recommender\Recommender.csproj" />
   </ItemGroup>
 
   <ItemGroup>

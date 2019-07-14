@@ -2,6 +2,7 @@
 {
     using BookRec.Infrastructure.Api;
     using BookRec.Infrastructure.EntityFramework;
+    using BookRec.Recommender;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
@@ -38,7 +39,8 @@
                 .AddHttpClient()
                 .AddDatabase()
                 .AddClients()
-                .AddRepositories();
+                .AddRepositories()
+                .AddRecommenders();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

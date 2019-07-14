@@ -57,6 +57,7 @@
                         var authors = res.GetValuesByPath<object>("volumeInfo.authors[0]");
                         var book = new Book()
                         {
+                            Id = Guid.NewGuid(),
                             Title = res.GetValueByPath<string>("volumeInfo.title"),
                             Subtitle = res.GetValueByPath<string>("volumeInfo.subtitle"),
                             Authors = authors != null ? string.Join(";", authors.ToArray()) : string.Empty,

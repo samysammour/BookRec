@@ -13,13 +13,14 @@
         {
             var builder = new ConfigurationBuilder();
 
-            var config = builder.Build();
+            var configuration = builder.Build();
             var services = new ServiceCollection();
             var serviceProvider = services
+                .AddSingleton(sc => configuration)
+                .AddHttpClient()
                 .AddDatabase()
                 .AddClients()
                 .AddRepositories()
-                .AddHttpClient()
                 .BuildServiceProvider();
 
             Console.WriteLine("Start!!!");

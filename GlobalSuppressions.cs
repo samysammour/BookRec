@@ -8,6 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1005:Single line comments must begin with single space", Justification = "<Pending>")]
 [assembly: SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis must be spaced correctly", Justification = "<Pending>")]
 [assembly: SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1012:Opening braces must be spaced correctly", Justification = "<Pending>")]
+[assembly: SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649:File name must match first type name", Justification = "<Pending>")]
 //[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1101:Prefix local calls with this", Justification = "<Pending>")]
 [assembly: SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1115:Parameter must follow comma", Justification = "<Pending>")]
 [assembly: SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1116:Split parameters must start on line after declaration", Justification = "<Pending>")]

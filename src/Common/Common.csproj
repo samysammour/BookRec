@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>BookRec.Commom</RootNamespace>
-    <AssemblyName>BookRec.Commom</AssemblyName>
+    <RootNamespace>BookRec.Common</RootNamespace>
+    <AssemblyName>BookRec.Common</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

@@ -21,4 +21,8 @@
     <ProjectReference Include="..\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\Books\" />
+  </ItemGroup>
+
 </Project>

@@ -1,8 +1,10 @@
 ﻿namespace BookRec.Infrastructure.EntityFramework
 {
+    using System;
     using BookRec.Infrastructure.EntityFramework.Context;
     using BookRec.Infrastructure.EntityFramework.Repositories;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -33,8 +35,10 @@
         {
             var serviceProvider = services.BuildServiceProvider();
 
+            var configuration = serviceProvider.GetService<IConfiguration>();
+            string connectionString = Environment.GetEnvironmentVariable("BookRec:DatabaseConnectionString");
             services.AddDbContext<BookRecContext>(options =>
-            options.UseSqlServer("Data Source=bookrec.database.windows.net,1433;Initial Catalog=BookRec;User ID=bookrec;Password=SD@!#!2sad"));
+                options.UseSqlServer(connectionString));
             return services;
         }
     }

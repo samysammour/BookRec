@@ -21,24 +21,53 @@
             this.repository = repository;
         }
 
-        public async Task<IEnumerable<Book>> GetPredicationAsync(IEnumerable<Book> inputs)
+        public async Task<IEnumerable<Book>> GetPredicationAsync(Book input)
         {
-            var exprs = new List<Expression<Func<Book, bool>>>();
-            foreach(var input in inputs)
-            {
-                exprs.Concat(this.CreateOptions(input).ToExpressions());
-            }
+            //var exprs = new List<Expression<Func<Book, bool>>>();
+            //foreach(var input in inputs)
+            //{
+            //    exprs.AddRange(this.CreateOptions(input).ToExpressions());
+            //}
+
+            //var query = this.repository.GetQuery()
+            //    .Where(x =>
+            //        inputs.Any(input => input.Categories == x.Categories) ||
+            //        inputs.Any(input => input.MaturityRating == x.MaturityRating) ||
+            //        inputs.Any(input => input.LanguageCode == x.LanguageCode) ||
+            //        inputs.Any(input => input.Country == x.Country) ||
+            //        inputs.Any(input => input.Authors == x.Authors) ||
+            //        inputs.Any(input => input.Publisher == x.Publisher) ||
+            //        inputs.Any(input => input.PublishedDate.Year + 30 < x.PublishedDate.Year && input.PublishedDate.Year - 30 > x.PublishedDate.Year));
 
             var query = this.repository.GetQuery()
-                            .WhereExpressions(exprs.AsEnumerable());
-            return await Task.FromResult(query);
+                .Where(x =>
+                    input.Categories == x.Categories ||
+                    input.Authors == x.Authors)
+                .Select(entry => new { Book = entry, Weight = this.CalculateWeight(entry, input)})
+                .OrderBy(x => x.Weight)
+                .Take(10).ToList();
+                    //{
+                    //    double weight = 0;
+                    //    if (entry.Categories == input.Categories)
+                    //    {
+                    //        weight += 0.7;
+                    //    }
+
+                    //    if (entry.Authors == input.Authors)
+                    //    {
+                    //        weight += 0.3;
+                    //    }
+
+                    //    return entry;
+                    //});
+            return await Task.FromResult(query.Select(x => x.Book));
         }
 
         private ContentBasedRecommenderOptions CreateOptions(Book book)
         {
             EnsureArg.IsNotNull(book);
 
-            return new ContentBasedRecommenderOptions()
+            var expr = new ContentBasedRecommenderOptions()
             {
                 HotFactors = new List<Expression<Func<Book, bool>>>()
                 {
@@ -65,6 +94,24 @@
                     t => t.PublicDomain == book.PublicDomain
                 }
             };
+
+            return expr;
+        }
+
+        private double CalculateWeight(Book dbObj, Book input)
+        {
+            double weight = 0;
+            if (dbObj.Categories.Equals(input.Categories, StringComparison.OrdinalIgnoreCase))
+            {
+                weight += 0.7;
+            }
+
+            if (dbObj.Authors.Equals(input.Authors, StringComparison.OrdinalIgnoreCase))
+            {
+                weight += 0.3;
+            }
+
+            return weight;
         }
     }
 }

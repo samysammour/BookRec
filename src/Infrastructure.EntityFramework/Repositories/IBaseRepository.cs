@@ -10,7 +10,7 @@
     public interface IBaseRepository<T>
         where T : AggregateRoot
     {
-        BookRecContext DbContext { get; set; }
+        BookRecContext DbContext { get; }
 
         Task<bool> DeleteAsync(Guid id);
 

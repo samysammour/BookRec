@@ -23,7 +23,7 @@
             this.dbContext = dbContext;
         }
 
-        public BookRecContext DbContext { get; set; }
+        public BookRecContext DbContext { get => this.dbContext; }
 
         public async Task<bool> DeleteAsync(Guid id)
         {

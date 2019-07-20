@@ -25,5 +25,8 @@
             EnsureArg.IsNotNull<string>(title);
             return await this.DbContext.Books.FirstOrDefaultAsync(x => x.Title == title);
         }
+
+        public async Task<List<Book>> GetByIdsAsync(string[] ids)
+            => await this.DbContext.Books.Where(x => ids.Contains(x.Id.ToString())).ToListAsync().ConfigureAwait(false);
     }
 }

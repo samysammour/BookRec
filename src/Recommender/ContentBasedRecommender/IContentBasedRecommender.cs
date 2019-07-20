@@ -6,6 +6,6 @@
 
     public interface IContentBasedRecommender
     {
-        Task<IEnumerable<Book>> GetPredicationAsync(IEnumerable<Book> inputs);
+        Task<IEnumerable<Book>> GetPredicationAsync(Book inputs);
     }
 }

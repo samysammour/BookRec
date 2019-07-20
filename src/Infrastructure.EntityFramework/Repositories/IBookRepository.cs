@@ -1,5 +1,6 @@
 ﻿namespace BookRec.Infrastructure.EntityFramework.Repositories
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using BookRec.Infrastructure.EntityFramework.Models;
@@ -9,5 +10,7 @@
         IQueryable<Book> GetQuery();
 
         Task<Book> GetByTitleAsync(string title);
+
+        Task<List<Book>> GetByIdsAsync(string[] ids);
     }
 }

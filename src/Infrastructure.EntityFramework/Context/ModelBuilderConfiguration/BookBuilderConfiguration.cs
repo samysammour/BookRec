@@ -11,6 +11,7 @@
             {
                 entity.Property(e => e.Id).IsRequired();
                 entity.Property(e => e.Title).IsRequired();
+                entity.HasMany(e => e.BookUsers);
             });
 
             return modelBuilder;

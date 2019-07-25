@@ -1,0 +1,112 @@
+﻿@page
+@model BookRec.App.Areas.Book.Pages.IndexModel
+@{
+    ViewData["Title"] = "My books";
+}
+
+
+<div class="row justify-content-md-center">
+    <div class="col-6">
+        <form class="ui-widget input-group">
+            <input class="form-control" type="text" autocomplete="off" id="book-autocomplete" placeholder="Search books..." aria-label="Search">
+            <button class="btn" type="button" id="book-clear">
+                <i class="fa fa-times"></i>
+            </button>
+            <button class="btn" type="button" id="book-spinner">
+                <img src="~/img/loading.gif" alt="loading" title="loading" />
+            </button>
+        </form>
+    </div>
+</div>
+
+<br />
+<br />
+
+<h1>My books</h1>
+<hr />
+<div class="card-columns">
+    @foreach (var userBook in Model.UserBooks)
+    {
+        <div class="card">
+            <img class="card-img-top img-fluid" src="@userBook.Book.ImageLink" alt="@userBook.Book.Title" title="@userBook.Book.Title">
+            <div class="card-body">
+                <h5 class="card-title">@userBook.Book.Title</h5>
+                <p class="card-text">@userBook.Book.Subtitle</p>
+            </div>
+            <div class="card-footer">
+                <i class="rating fa fa-star @(userBook.Rating >= 1 ? "star-active" : "star-inactive")" data-id="@userBook.Id" onclick="updateRating(this, 1)"></i>
+                <i class="rating fa fa-star @(userBook.Rating >= 2 ? "star-active" : "star-inactive")" data-id="@userBook.Id" onclick="updateRating(this, 2)"></i>
+                <i class="rating fa fa-star @(userBook.Rating >= 3 ? "star-active" : "star-inactive")" data-id="@userBook.Id" onclick="updateRating(this, 3)"></i>
+                <i class="rating fa fa-star @(userBook.Rating >= 4 ? "star-active" : "star-inactive")" data-id="@userBook.Id" onclick="updateRating(this, 4)"></i>
+                <i class="rating fa fa-star @(userBook.Rating >= 5 ? "star-active" : "star-inactive")" data-id="@userBook.Id" onclick="updateRating(this, 5)"></i>
+                <a href="@userBook.Book.PreviewLink" target="_blank" class="btn btn-link">Visit</a>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            var url = '@Url.Page("index", "filter")';
+            $("#book-clear").show();
+            $("#book-spinner").hide();
+
+            $("input#book-autocomplete").autocomplete({
+                source: function (query, process) {
+                    get(url, query, process);
+                },
+                focus: function (event, ui) {
+                    $("#book-autocomplete").val(ui.item.text);
+                    return false;
+                },
+                select: function (event, ui) {
+                    $("#book-autocomplete").val(ui.item.text);
+                    addBookToUser(ui.item.value);
+                    return false;
+                }
+            })
+            .autocomplete("instance")._renderItem = function (ul, item) {
+                return $("<li>")
+                    .append(`<div class="ui-menu-item-wrapper">${item.text}</div>`)
+                    .appendTo(ul);
+            };
+            $('#book-clear').click(function () {
+                $("input#book-autocomplete").val('').focus();
+            });
+
+            function get(url, query, process) {
+                if (query.term && query.term.length >= 2) {
+                    $("#book-clear").hide();
+                    $("#book-spinner").show();
+                    $.getJSON(url, { value: query.term }, function (response) {
+                        $("#book-spinner").hide();
+                        $("#book-clear").show();
+                        process(response);
+                    });
+                }
+            }
+
+            function addBookToUser(value) {
+                $.getJSON('@Url.Page("index", "add")', { id: value }, function (response) {
+                    if (response) {
+                        // TODO refresh
+                        console.log('refresh');
+                    }
+                });
+            }
+
+        });
+
+        function updateRating(self, stars) {
+            var id = $(self).data("id");
+            $.getJSON('@Url.Page("index", "rating")', { id: id, stars: stars }, function (response) {
+                    if (response) {
+                        // TODO refresh
+                        console.log('refresh');
+                    }
+                });
+        }
+    </script>
+}

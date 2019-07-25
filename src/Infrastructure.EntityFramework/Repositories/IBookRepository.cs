@@ -12,5 +12,7 @@
         Task<Book> GetByTitleAsync(string title);
 
         Task<List<Book>> GetByIdsAsync(string[] ids);
+
+        Task<List<ListModel>> GetListByTitleAsync(string value);
     }
 }

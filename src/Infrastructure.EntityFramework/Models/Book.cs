@@ -1,6 +1,7 @@
 ﻿namespace BookRec.Infrastructure.EntityFramework.Models
 {
     using System;
+    using System.Collections.Generic;
 
     public class Book : AggregateRoot
     {
@@ -33,5 +34,7 @@
         public string Country { get; set; }
 
         public bool PublicDomain { get; set; }
+
+        public ICollection<UserBook> BookUsers { get; set; }
     }
 }

@@ -23,6 +23,12 @@
                 return new BookRepository(context);
             });
 
+            services.TryAddScoped<IUserBookRepository>(sp =>
+            {
+                var context = sp.GetService<BookRecContext>();
+                return new UserBookRepository(context);
+            });
+
             return services;
         }
 
@@ -37,6 +43,7 @@
 
             var configuration = serviceProvider.GetService<IConfiguration>();
             string connectionString = Environment.GetEnvironmentVariable("BookRec:DatabaseConnectionString");
+
             services.AddDbContext<BookRecContext>(options =>
                 options.UseSqlServer(connectionString));
             return services;

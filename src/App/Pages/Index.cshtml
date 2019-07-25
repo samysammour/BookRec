@@ -9,4 +9,21 @@
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
-@Model.Books.Count()
+@if(Model.Books != null && Model.Books.Any())
+{
+    <div class="card-columns">
+        @foreach (var book in Model.Books)
+        {
+            <div class="card">
+                <img class="card-img-top img-fluid" src="@book.ImageLink" alt="@book.Title" title="@book.Title">
+                <div class="card-body">
+                    <h5 class="card-title">@book.Title</h5>
+                    <p class="card-text">@book.Subtitle</p>
+                </div>
+                <div class="card-footer">
+                    <a href="@book.PreviewLink" target="_blank" class="btn btn-link">Visit</a>
+                </div>
+            </div>
+        }
+    </div>
+}

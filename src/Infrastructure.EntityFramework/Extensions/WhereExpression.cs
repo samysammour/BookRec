@@ -1,4 +1,4 @@
-﻿namespace BookRec.Common
+﻿namespace BookRec.Infrastructure.EntityFramework.Extensions
 {
     using System;
     using System.Collections.Generic;

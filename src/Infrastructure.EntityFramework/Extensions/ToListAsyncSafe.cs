@@ -9,7 +9,7 @@
 
     public static partial class Extensions
     {
-        public static Task<List<TSource>> ToListAsyncSafe<TSource>(this IQueryable<TSource> source, CancellationToken cancellationToken = default)
+        public static Task<List<TSource>> ToSafeListAsync<TSource>(this IQueryable<TSource> source, CancellationToken cancellationToken = default)
         {
             if (source == null)
             {
@@ -22,6 +22,36 @@
             }
 
             return source.ToListAsync(cancellationToken);
+        }
+
+        public static Task<List<TSource>> ToSafeListAsync<TSource>(this IOrderedQueryable<TSource> source, CancellationToken cancellationToken = default)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            if (!(source is IAsyncEnumerable<TSource>))
+            {
+                return Task.FromResult(source.ToList());
+            }
+
+            return source.ToListAsync(cancellationToken);
+        }
+
+        public static Task<List<TSource>> ToSafeListAsync<TSource>(this IOrderedEnumerable<TSource> source, CancellationToken cancellationToken = default)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            if (!(source is IAsyncEnumerable<TSource>))
+            {
+                return Task.FromResult(source.ToList());
+            }
+
+            return source.AsQueryable().ToListAsync(cancellationToken);
         }
     }
 }

@@ -137,3 +137,7 @@ body {
 .star-inactive {
     color: silver;
 }
+
+.hr-light {
+    background-color: #aaa !important;
+}

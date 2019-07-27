@@ -6,16 +6,35 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <p>Welcome to BookRec, the best book recommendation system.</p>
+    <p>Please go to <a clas="btn-link btn" asp-area="Book" asp-page="/Index">My Books</a> and the add books you read.</p>
+    <form asp-page="Index" method="post" asp-page-handler="FindRecommendation">
+        <button class="btn btn-primary" type="submit" onclick="toggleLoading()">Find recommendation</button>
+    </form>
 </div>
 
-@if(Model.Books != null && Model.Books.Any())
+<div class="text-center" id="loading">
+    <br /><br />
+    <img src="~/img/loading.gif" width="80" />
+</div>
+
+@if (Model.Predications != null && Model.Predications.Any())
 {
+    <br />
+    <h2>We recommend:</h2>
+    <hr class="hr-light"/>
     <div class="card-columns">
-        @foreach (var book in Model.Books)
+        @foreach (var book in Model.Predications.Select(x => x.Book))
         {
             <div class="card">
-                <img class="card-img-top img-fluid" src="@book.ImageLink" alt="@book.Title" title="@book.Title">
+                @if (string.IsNullOrEmpty(book.ImageLink))
+                {
+                    <img class="card-img-top img-fluid" src="~/img/no_image.png" alt="@book.Title" title="@book.Title">
+                }
+                else
+                {
+                    <img class="card-img-top img-fluid" src="@book.ImageLink" alt="@book.Title" title="@book.Title">
+                }
                 <div class="card-body">
                     <h5 class="card-title">@book.Title</h5>
                     <p class="card-text">@book.Subtitle</p>
@@ -26,4 +45,24 @@
             </div>
         }
     </div>
+}
+else
+{
+    <div class="text-center">
+        <br /><br />
+        <p>There are no recommendations</p>
+    </div>
+}
+
+@section  Scripts
+{
+    <script>
+    $(document).ready(function () {
+        $('#loading').hide();
+    });
+
+    function toggleLoading() {
+        $('#loading').show();
+    }   
+    </script>
 }

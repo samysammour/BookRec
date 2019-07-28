@@ -141,3 +141,26 @@ body {
 .hr-light {
     background-color: #aaa !important;
 }
+
+.rating {
+    cursor:pointer;
+}
+
+.delete-book-icon {
+    cursor: pointer;
+    position: absolute;
+    top: 5px;
+    color: #efefef;
+    left: 91%;
+    background: #666;
+    width: 21px;
+    height: 21px;
+    padding-top: 4px;
+    padding-left: 5px;
+    border-radius: 21px;
+}
+
+    .delete-book-icon:hover {
+        background: #efefef;
+        color: #666;
+    }

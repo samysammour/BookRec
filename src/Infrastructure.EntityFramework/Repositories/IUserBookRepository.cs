@@ -9,6 +9,10 @@
     {
         Task<List<UserBook>> GetByUsernameAsync(string username);
 
+        Task<UserBook> GetByBookIdAsync(string bookId, string username);
+
         Task<UserBook> UpdateStarAsync(string id, string username, int stars);
+
+        Task<bool> DeleteByBookIdAsync(string bookId, string username);
     }
 }

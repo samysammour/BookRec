@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookRec.Infrastructure.EntityFramework.Migrations
 {
     [DbContext(typeof(BookRecContext))]
-    [Migration("20190725173725_AddUserBookTable")]
-    partial class AddUserBookTable
+    [Migration("20190728130544_AddUserBooks")]
+    partial class AddUserBooks
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -81,7 +81,7 @@ namespace BookRec.Infrastructure.EntityFramework.Migrations
 
                     b.HasIndex("Username");
 
-                    b.ToTable("BookUsers");
+                    b.ToTable("UserBooks");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

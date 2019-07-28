@@ -21,7 +21,10 @@
 
         public async Task<List<PredicationModel>> GetPredicationsByBooksAsync(List<Book> inputs)
         {
-            EnsureArg.IsNotNull(inputs);
+            if (inputs == null || !inputs.Any())
+            {
+                return new List<PredicationModel>();
+            }
 
             var options = new ContentBasedRecommenderOptions(inputs);
 

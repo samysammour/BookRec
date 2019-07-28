@@ -30,15 +30,20 @@ namespace BookRec.App.Areas.Book.Pages
         public async Task OnGet()
             => this.UserBooks = await this.userBookRepository.GetByUsernameAsync(this.User.Identity.Name).ConfigureAwait(false);
 
-        public async Task<IActionResult> OnGetRatingAsync(string id, int stars)
+        public async Task OnGetRatingAsync(string id, int stars)
         {
             await this.userBookRepository.UpdateStarAsync(id, this.User.Identity.Name, stars).ConfigureAwait(false);
-            return this.Page();
         }
 
         public async Task OnGetAddAsync(string id)
         {
             EnsureArg.IsNotNullOrEmpty(id);
+            var book = await this.userBookRepository.GetByBookIdAsync(id, this.User.Identity.Name).ConfigureAwait(false);
+            if (book != null)
+            {
+                return;
+            }
+
             var userBook = new UserBook()
             {
                 BookId = id.ToGuid().Value,
@@ -47,7 +52,6 @@ namespace BookRec.App.Areas.Book.Pages
             };
 
             await this.userBookRepository.InsertAsync(userBook).ConfigureAwait(false);
-            await this.OnGet().ConfigureAwait(false);
         }
 
         public async Task<IActionResult> OnGetFilterAsync(string value)
@@ -55,5 +59,8 @@ namespace BookRec.App.Areas.Book.Pages
             var list = await this.repository.GetListByTitleAsync(value).ConfigureAwait(false);
             return new JsonResult(list);
         }
+
+        public async Task OnGetDeleteAsync(string id)
+            => await this.userBookRepository.DeleteAsync(id.ToGuid().Value).ConfigureAwait(false);
     }
 }

@@ -24,6 +24,34 @@
             return await this.DbContext.UserBooks.Include(x => x.Book).Where(x => x.Username == username).ToListAsync().ConfigureAwait(false);
         }
 
+        public async Task<bool> DeleteByBookIdAsync(string bookId, string username)
+        {
+            EnsureArg.IsNotNullOrEmpty(bookId);
+            EnsureArg.IsNotNullOrEmpty(username);
+
+            var book = await this.DbContext.UserBooks.FirstOrDefaultAsync(x => x.BookId == bookId.ToGuid().Value && x.Username == username).ConfigureAwait(false);
+            if (book != null)
+            {
+                return await this.DeleteAsync(book.Id).ConfigureAwait(false);
+            }
+
+            return false;
+        }
+
+        public async Task<UserBook> GetByBookIdAsync(string bookId, string username)
+        {
+            EnsureArg.IsNotNullOrEmpty(bookId);
+            EnsureArg.IsNotNullOrEmpty(username);
+
+            var book = await this.DbContext.UserBooks.FirstOrDefaultAsync(x => x.BookId == bookId.ToGuid().Value && x.Username == username).ConfigureAwait(false);
+            if (book != null)
+            {
+                return book;
+            }
+
+            return null;
+        }
+
         public async Task<UserBook> UpdateStarAsync(string id, string username, int stars)
         {
             EnsureArg.IsNotNullOrEmpty(id);

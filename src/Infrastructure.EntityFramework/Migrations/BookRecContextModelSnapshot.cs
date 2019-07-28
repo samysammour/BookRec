@@ -79,7 +79,7 @@ namespace BookRec.Infrastructure.EntityFramework.Migrations
 
                     b.HasIndex("Username");
 
-                    b.ToTable("BookUsers");
+                    b.ToTable("UserBooks");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

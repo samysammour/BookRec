@@ -15,7 +15,7 @@
                 entity.HasIndex(e => e.Username);
                 entity.HasIndex(e => e.BookId);
                 entity.HasOne(e => e.Book);
-                entity.ToTable("BookUsers");
+                entity.ToTable("UserBooks");
             });
 
             return modelBuilder;

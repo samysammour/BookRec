@@ -3,12 +3,12 @@
     using System;
     using Microsoft.EntityFrameworkCore.Migrations;
 
-    public partial class AddUserBookTable : Migration
+    public partial class AddUserBooks : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "BookUsers",
+                name: "UserBooks",
                 schema: "BookRec",
                 columns: table => new
                 {
@@ -19,9 +19,9 @@
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BookUsers", x => x.Id);
+                    table.PrimaryKey("PK_UserBooks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BookUsers_Books_BookId",
+                        name: "FK_UserBooks_Books_BookId",
                         column: x => x.BookId,
                         principalSchema: "BookRec",
                         principalTable: "Books",
@@ -30,22 +30,22 @@
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookUsers_BookId",
+                name: "IX_UserBooks_BookId",
                 schema: "BookRec",
-                table: "BookUsers",
+                table: "UserBooks",
                 column: "BookId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookUsers_Username",
+                name: "IX_UserBooks_Username",
                 schema: "BookRec",
-                table: "BookUsers",
+                table: "UserBooks",
                 column: "Username");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "BookUsers",
+                name: "UserBooks",
                 schema: "BookRec");
         }
     }

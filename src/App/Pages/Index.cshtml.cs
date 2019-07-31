@@ -7,10 +7,12 @@
     using EnsureThat;
     using Infrastructure.EntityFramework.Models;
     using Infrastructure.EntityFramework.Repositories;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.RazorPages;
     using Recommender;
 
+    [Authorize]
     public class IndexModel : PageModel
     {
         private readonly IUserBookRepository userBookRepository;

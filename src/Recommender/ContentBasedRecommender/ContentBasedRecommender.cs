@@ -30,8 +30,9 @@
 
             return await this.repository.GetQuery()
                 .Where(x => inputs.All(i => x.Id != i.Id))
-                .Where(options.ToExpressions())
-                .Take(10)
+                .Where(options.AndExpressions())
+                .Where(options.OrExpressions())
+                .Take(1000)
                 .AsEnumerable()
                 .Select(entry =>
                 {
@@ -39,7 +40,10 @@
                     predication.CalculateWeight(options);
                     return predication;
                 })
-                .OrderBy(x => x.Score).ToSafeListAsync();
+                .OrderByDescending(x => x.Score)
+                .Take(10)
+                .AsQueryable()
+                .ToSafeListAsync();
         }
     }
 }

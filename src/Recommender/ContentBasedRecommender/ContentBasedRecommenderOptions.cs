@@ -24,8 +24,22 @@
 
         public IEnumerable<Expression<Func<Book, bool>>> ColdFactors { get; set; }
 
-        public Expression<Func<Book, bool>> ToExpressions()
-            => this.HotFactors.SafeConcat(this.WarmFactors).ToArray().Aggregate((l, r) => l.Or(r));
+        public Expression<Func<Book, bool>> AndExpressions()
+        {
+            var andEXpressions = this.HotFactors.ToArray().Aggregate((l, r) => l.And(r));
+            //var orEXpressions = this.WarmFactors.ToArray().Aggregate((l, r) => l.Or(r));
+
+            return andEXpressions;
+            //var invokedExpr = Expression.Invoke(andEXpressions, orEXpressions.Parameters.Cast<Expression>());
+            //return Expression.Lambda<Func<Book, bool>>(Expression.Or(orEXpressions.Body, invokedExpr), andEXpressions.Parameters);
+        }
+
+        public Expression<Func<Book, bool>> OrExpressions()
+        {
+            var orEXpressions = this.WarmFactors.ToArray().Aggregate((l, r) => l.Or(r));
+
+            return orEXpressions;
+        }
 
         public double GetHotFactorWeight()
             => (double)this.GetWarmFactorWeight() * 2;
@@ -84,7 +98,7 @@
                 {
                     t => books.Any(x => x.Authors == t.Authors),
                     t => books.Any(x => x.Publisher == t.Publisher),
-                    t => books.Any(x => t.PublishedDate.Year < x.PublishedDate.Year + 30 && t.PublishedDate.Year > x.PublishedDate.Year - 30),
+                    t => books.Any(x => t.PublishedDate.Year < x.PublishedDate.Year + 50 && t.PublishedDate.Year > x.PublishedDate.Year - 50),
                 };
 
             this.ColdFactors = new List<Expression<Func<Book, bool>>>()

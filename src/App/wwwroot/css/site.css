@@ -164,3 +164,8 @@ body {
         background: #efefef;
         color: #666;
     }
+
+.recommender-form {
+    width: 20%;
+    display: inline-block;
+}

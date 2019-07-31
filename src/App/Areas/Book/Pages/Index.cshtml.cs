@@ -28,7 +28,9 @@ namespace BookRec.App.Areas.Book.Pages
         public IEnumerable<UserBook> UserBooks { get; set; }
 
         public async Task OnGet()
-            => this.UserBooks = await this.userBookRepository.GetByUsernameAsync(this.User.Identity.Name).ConfigureAwait(false);
+        {
+            this.UserBooks = await this.userBookRepository.GetByUsernameAsync(this.User.Identity.Name).ConfigureAwait(false);
+        }
 
         public async Task OnGetRatingAsync(string id, int stars)
         {

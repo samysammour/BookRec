@@ -1,7 +1,9 @@
 ﻿@page
+@using BookRec.Infrastructure.EntityFramework.Models
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Recommendation";
+    ViewData["IsRecommendation"] = true;
 }
 
 <div class="text-center">
@@ -14,7 +16,7 @@
         <form asp-page="Index" method="post" asp-page-handler="FindCBFRecommendation" class="recommender-form">
             <button class="btn btn-primary" type="submit" onclick="toggleLoading()">Content-Based Filtering</button>
         </form>
-        <form  asp-page="Index" method="post" asp-page-handler="FindCFRecommendation" class="recommender-form">
+        <form asp-page="Index" method="post" asp-page-handler="FindCFRecommendation" class="recommender-form">
             <button class="btn btn-primary" type="submit" onclick="toggleLoading()">Collaborative Filtering</button>
         </form>
         <form class="recommender-form">
@@ -33,30 +35,36 @@
     <h2>We recommend:</h2>
     <hr class="hr-light" />
     <div class="card-columns">
-        @foreach (var book in Model.Predications.Select(x => x.Book))
+        @foreach (var predication in Model.Predications)
         {
-            <div class="card card-block">
-                @if (string.IsNullOrEmpty(book.ImageLink))
-                {
-                    <img class="card-img-top img-fluid" src="~/img/no_image.png" alt="@book.Title" title="@book.Title">
-                }
-                else
-                {
-                    <img class="card-img-top img-fluid" src="@book.ImageLink" alt="@book.Title" title="@book.Title">
-                }
-                <div class="card-body">
-                    <h5 class="card-title">@book.Title</h5>
-                    <p class="card-text">@book.Subtitle</p>
-                    <p class="card-text">Category: <b>@book.Categories</b></p>
-                    <p class="card-text">Language: @book.LanguageCode</p>
-                    <p class="card-text">Author: @book.Authors</p>
-                </div>
-                <div class="card-footer">
-                    <a href="@book.PreviewLink" target="_blank" class="btn btn-link">Visit</a>
-                </div>
+        <div class="card card-block">
+            @if (string.IsNullOrEmpty(predication.Book.ImageLink))
+            {
+                <img class="card-img-top img-fluid" src="~/img/no_image.png" alt="@predication.Book.Title" title="@predication.Book.Title">
+            }
+            else
+            {
+                <img class="card-img-top img-fluid" src="@predication.Book.ImageLink" alt="@predication.Book.Title" title="@predication.Book.Title">
+            }
+
+            <span class="badge badge-pill badge-primary score-badge">Score @Math.Round(predication.Score, 3)</span>
+
+
+            <div class="card-body">
+                <h5 class="card-title">@predication.Book.Title</h5>
+                <p class="card-text">@predication.Book.Subtitle</p>
+                <p class="card-text">Category: <b>@predication.Book.Categories</b></p>
+                <p class="card-text">Language: @predication.Book.LanguageCode</p>
+                <p class="card-text">Author: @predication.Book.Authors</p>
             </div>
+
+            <div class="card-footer">
+                <a href="@predication.Book.PreviewLink" target="_blank" class="btn btn-link">Visit</a>
+            </div>
+        </div>
         }
     </div>
+
 }
 else
 {

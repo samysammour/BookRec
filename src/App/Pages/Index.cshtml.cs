@@ -17,14 +17,17 @@
     {
         private readonly IUserBookRepository userBookRepository;
         private readonly IContentBasedRecommender contentBasedRecommender;
+        private readonly ICollaborativeRecommender collaborativeRecommender;
 
-        public IndexModel(IUserBookRepository userBookRepository, IContentBasedRecommender contentBasedRecommender)
+        public IndexModel(IUserBookRepository userBookRepository, IContentBasedRecommender contentBasedRecommender, ICollaborativeRecommender collaborativeRecommender)
         {
             EnsureArg.IsNotNull(userBookRepository);
             EnsureArg.IsNotNull(contentBasedRecommender);
+            EnsureArg.IsNotNull(collaborativeRecommender);
 
             this.userBookRepository = userBookRepository;
             this.contentBasedRecommender = contentBasedRecommender;
+            this.collaborativeRecommender = collaborativeRecommender;
         }
 
         public List<PredicationModel> Predications { get; set; }
@@ -33,10 +36,16 @@
         {
         }
 
-        public async Task OnPostFindRecommendationAsync()
+        public async Task OnPostFindCBFRecommendationAsync()
         {
             var inputs = await this.userBookRepository.GetByUsernameAsync(this.User.Identity.Name).ConfigureAwait(false);
             this.Predications = await this.contentBasedRecommender.GetPredicationsByBooksAsync(inputs.Select(x => x.Book).ToList()).ConfigureAwait(false);
+        }
+
+        public async Task OnPostFindCFRecommendationAsync()
+        {
+            var inputs = await this.userBookRepository.GetByUsernameAsync(this.User.Identity.Name).ConfigureAwait(false);
+            this.Predications = await this.collaborativeRecommender.GetPredicationsByBooksAsync(inputs.Select(x => x.Book).ToList(), this.User.Identity.Name).ConfigureAwait(false);
         }
     }
 }

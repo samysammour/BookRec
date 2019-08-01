@@ -11,10 +11,10 @@
     <br />
     <h5>Please choose the filtering you want to apply</h5>
     <div class="text-center">
-        <form asp-page="Index" method="post" asp-page-handler="FindRecommendation" class="recommender-form">
+        <form asp-page="Index" method="post" asp-page-handler="FindCBFRecommendation" class="recommender-form">
             <button class="btn btn-primary" type="submit" onclick="toggleLoading()">Content-Based Filtering</button>
         </form>
-        <form class="recommender-form">
+        <form  asp-page="Index" method="post" asp-page-handler="FindCFRecommendation" class="recommender-form">
             <button class="btn btn-primary" type="submit" onclick="toggleLoading()">Collaborative Filtering</button>
         </form>
         <form class="recommender-form">
@@ -35,7 +35,7 @@
     <div class="card-columns">
         @foreach (var book in Model.Predications.Select(x => x.Book))
         {
-            <div class="card">
+            <div class="card card-block">
                 @if (string.IsNullOrEmpty(book.ImageLink))
                 {
                     <img class="card-img-top img-fluid" src="~/img/no_image.png" alt="@book.Title" title="@book.Title">
@@ -44,13 +44,13 @@
                 {
                     <img class="card-img-top img-fluid" src="@book.ImageLink" alt="@book.Title" title="@book.Title">
                 }
-            <div class="card-body">
-                <h5 class="card-title">@book.Title</h5>
-                <p class="card-text">@book.Subtitle</p>
-                <p class="card-text">Category: <b>@book.Categories</b></p>
-                <p class="card-text">Language: @book.LanguageCode</p>
-                <p class="card-text">Author: @book.Authors</p>
-            </div>
+                <div class="card-body">
+                    <h5 class="card-title">@book.Title</h5>
+                    <p class="card-text">@book.Subtitle</p>
+                    <p class="card-text">Category: <b>@book.Categories</b></p>
+                    <p class="card-text">Language: @book.LanguageCode</p>
+                    <p class="card-text">Author: @book.Authors</p>
+                </div>
                 <div class="card-footer">
                     <a href="@book.PreviewLink" target="_blank" class="btn btn-link">Visit</a>
                 </div>

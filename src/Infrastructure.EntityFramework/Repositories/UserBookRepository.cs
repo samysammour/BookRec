@@ -18,6 +18,8 @@
         {
         }
 
+        public IQueryable<UserBook> GetQuery() => this.DbContext.UserBooks;
+
         public async Task<List<UserBook>> GetByUsernameAsync(string username)
         {
             EnsureArg.IsNotNullOrEmpty(username);

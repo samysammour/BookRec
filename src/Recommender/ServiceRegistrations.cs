@@ -19,6 +19,12 @@
                 return new ContentBasedRecommender(repository);
             });
 
+            services.TryAddScoped<ICollaborativeRecommender>(sp =>
+            {
+                var repository = sp.GetService<IUserBookRepository>();
+                return new CollaborativeRecommender(repository);
+            });
+
             return services;
         }
     }

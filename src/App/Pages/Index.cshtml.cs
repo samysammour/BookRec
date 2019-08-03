@@ -45,7 +45,7 @@
         public async Task OnPostFindCFRecommendationAsync()
         {
             var inputs = await this.userBookRepository.GetByUsernameAsync(this.User.Identity.Name).ConfigureAwait(false);
-            this.Predications = await this.collaborativeRecommender.GetPredicationsByBooksAsync(inputs.Select(x => x.Book).ToList(), this.User.Identity.Name).ConfigureAwait(false);
+            this.Predications = await this.collaborativeRecommender.GetPredicationsByBooksAsync(inputs.ToList(), this.User.Identity.Name).ConfigureAwait(false);
         }
     }
 }

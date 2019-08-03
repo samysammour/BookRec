@@ -23,38 +23,54 @@
             this.repository = repository;
         }
 
-        public async Task<List<PredicationModel>> GetPredicationsByBooksAsync(List<Book> inputs, string username)
+        public async Task<List<PredicationModel>> GetPredicationsByBooksAsync(List<UserBook> inputs, string username)
         {
-            var ids = inputs.Select(x => x.Id).Distinct();
-            var similarBooks = await
-                (from userBook in this.repository.DbContext.UserBooks.Include(x => x.Book)
-                join book in this.repository.DbContext.Books on userBook.BookId equals book.Id
-                where (from subUserBook in this.repository.DbContext.UserBooks
-                       join subBook in this.repository.DbContext.Books on subUserBook.BookId equals subBook.Id
-                       where ids.Any(id => id == subUserBook.BookId) && subUserBook.Username != username
-                       select subUserBook.Username).Distinct().Contains(userBook.Username)
-                        &&
-                        !ids.Contains(userBook.BookId)
-                select userBook).ToSafeListAsync();
+            var helper = new CollaborativeRecommenderHelper(inputs);
+            var userGroups = await (from userBook in this.repository.DbContext.UserBooks.Include(x => x.Book)
+                                    join book in this.repository.DbContext.Books on userBook.BookId equals book.Id
+                                    where (from subUserBook in this.repository.DbContext.UserBooks
+                                           join subBook in this.repository.DbContext.Books on subUserBook.BookId equals subBook.Id
+                                           where helper.Ids.Any(id => id == subUserBook.BookId) && subUserBook.Username != username
+                                           select subUserBook.Username).Distinct().Contains(userBook.Username)
+                                    group userBook by userBook.Username into userGroup
+                                    select new
+                                    {
+                                                Group = userGroup,
+                                                Temperature = helper.CalculateUTM(userGroup),
+                                                Nos = helper.CalculateNOS(userGroup)
+                                    })
+                             .OrderByDescending(x => x.Temperature).Take(500).ToSafeListAsync();
 
-            var helper = new CollaborativeRecommenderHelper(similarBooks);
-
-            return similarBooks.DistinctBy(x => x.BookId).Select(userBook =>
+            var outputWeights = userGroups.SelectMany(group =>
             {
-                var group = helper.FindGroup(userBook.BookId);
-                var item = new IterationModel()
-                {
-                    Book = userBook.Book,
-                    Iteration = group.Count(),
-                    Rating = helper.CalculateRating(group)
-                };
+                return group.Group.Where(x => !helper.Ids.Contains(x.BookId))
+                        .Select(item => new
+                        {
+                            item.Book,
+                            Score = helper.CalculateOPW(group.Temperature, item.Rating),
+                            group.Nos
+                        });
+            });
 
-                return item;
-            }).Select(model => new PredicationModel()
-            {
-                Book = model.Book,
-                Score = helper.CalculateScore(model)
-            }).OrderByDescending(x => x.Score).Take(10).ToList();
+            return outputWeights.GroupBy(x => x.Book.Id)
+                    .Select(group =>
+                    {
+                        var prediction = new PredicationModel()
+                        {
+                            Book = group.FirstOrDefault().Book
+                        };
+
+                        if (group.Count() == 1)
+                        {
+                            prediction.Score = group.FirstOrDefault().Score;
+                        }
+                        else
+                        {
+                            prediction.Score = (double)(group.Sum(x => x.Nos * x.Score) / group.Count());
+                        }
+
+                        return prediction;
+                    }).OrderByDescending(x => x.Score).Take(10).ToList();
         }
     }
 }

@@ -15,103 +15,91 @@
         {
             EnsureArg.IsNotNull(inputs);
 
-            this.InitOptions(inputs);
+            this.FilterCategories(inputs);
+            this.FilterMaturityRating(inputs);
+            this.FilterLanguageCode(inputs);
+            this.FilterCountry(inputs);
+            this.FilterAuthors(inputs);
+            this.FilterPublisher(inputs);
+            this.FilterPublishedDate(inputs);
         }
 
-        public IEnumerable<Expression<Func<Book, bool>>> HotFactors { get; set; }
+        public List<string> Categories { get; set; }
 
-        public IEnumerable<Expression<Func<Book, bool>>> WarmFactors { get; set; }
+        public List<string> MaturityRating { get; set; }
 
-        public IEnumerable<Expression<Func<Book, bool>>> ColdFactors { get; set; }
+        public List<string> LanguageCode { get; set; }
 
-        public Expression<Func<Book, bool>> AndExpressions()
+        public List<string> Country { get; set; }
+
+        public List<string> Authors { get; set; }
+
+        public List<string> Publisher { get; set; }
+
+        public List<int> PublishedYear { get; set; }
+
+        public double HotFactorsSatisfaction(Book book)
+            => (this.Categories.Any(x => x == book.Categories) ? 1 : 0) +
+                (this.LanguageCode.Any(x => x == book.LanguageCode) ? 1 : 0) +
+                (this.Country.Any(x => x == book.Country) ? 1 : 0) +
+                (this.MaturityRating.Any(x => x == book.MaturityRating) ? 1 : 0);
+
+        public double WarmFactorsSatisfaction(Book book)
+            => (this.Authors.Any(x => x == book.Authors) ? 0.5 : 0) +
+                (this.Publisher.Any(x => x == book.Publisher) ? 0.5 : 0) +
+                (this.PublishedYear.Any(x => book.PublishedDate.ToNearistYear() == x) ? 0.5 : 0);
+
+        public double MinScore() => 4;
+
+        public double CalculateScore(double weight) => weight / 5.5;
+
+        private void FilterCategories(List<Book> inputs)
         {
-            var andEXpressions = this.HotFactors.ToArray().Aggregate((l, r) => l.And(r));
-            //var orEXpressions = this.WarmFactors.ToArray().Aggregate((l, r) => l.Or(r));
-
-            return andEXpressions;
-            //var invokedExpr = Expression.Invoke(andEXpressions, orEXpressions.Parameters.Cast<Expression>());
-            //return Expression.Lambda<Func<Book, bool>>(Expression.Or(orEXpressions.Body, invokedExpr), andEXpressions.Parameters);
+            var groups = inputs.GroupBy(x => x.Categories);
+            var threshold = (double)groups.Sum(group => group.Count()) / groups.Count();
+            this.Categories = groups.Where(group => group.Count() >= threshold).SelectMany(group => group.Select(x => x.Categories)).Where(x => x != null).Distinct().ToList();
         }
 
-        public Expression<Func<Book, bool>> OrExpressions()
+        private void FilterMaturityRating(List<Book> inputs)
         {
-            var orEXpressions = this.WarmFactors.ToArray().Aggregate((l, r) => l.Or(r));
-
-            return orEXpressions;
+            var groups = inputs.GroupBy(x => x.MaturityRating);
+            var threshold = (double)groups.Sum(group => group.Count()) / groups.Count();
+            this.MaturityRating = groups.Where(group => group.Count() >= threshold).SelectMany(group => group.Select(x => x.MaturityRating)).Where(x => x != null).Distinct().ToList();
         }
 
-        public double GetHotFactorWeight()
-            => (double)this.GetWarmFactorWeight() * 2;
-
-        public double GetWarmFactorWeight()
-            => (double)1 / ((this.HotFactors.Count() * 2) + this.WarmFactors.Count());
-
-        public double HotFactorsSatisfactions(Book input)
+        private void FilterLanguageCode(List<Book> inputs)
         {
-            var hotFactorWeight = 0.0;
-            var weightPerFactor = this.GetHotFactorWeight();
-            if (input == default)
-            {
-                return 0.0;
-            }
-
-            foreach (var exp in this.HotFactors)
-            {
-                Func<Book, bool> predicate = exp.ToPredicate();
-                hotFactorWeight = predicate(input) ? hotFactorWeight + weightPerFactor : hotFactorWeight;
-            }
-
-            return hotFactorWeight;
+            var groups = inputs.GroupBy(x => x.LanguageCode);
+            var threshold = (double)groups.Sum(group => group.Count()) / groups.Count();
+            this.LanguageCode = groups.Where(group => group.Count() >= threshold).SelectMany(group => group.Select(x => x.LanguageCode)).Where(x => x != null).Distinct().ToList();
         }
 
-        public double WarmFactorsSatisfactions(Book input)
+        private void FilterCountry(List<Book> inputs)
         {
-            var warmFactorWeight = 0.0;
-            var weightPerFactor = this.GetWarmFactorWeight();
-            if (input == default)
-            {
-                return 0.0;
-            }
-
-            foreach (var exp in this.WarmFactors)
-            {
-                Func<Book, bool> predicate = exp.ToPredicate();
-                warmFactorWeight = predicate(input) ? warmFactorWeight + weightPerFactor : warmFactorWeight;
-            }
-
-            return warmFactorWeight;
+            var groups = inputs.GroupBy(x => x.Country);
+            var threshold = (double)groups.Sum(group => group.Count()) / groups.Count();
+            this.Country = groups.Where(group => group.Count() >= threshold).SelectMany(group => group.Select(x => x.Country)).Where(x => x != null).Distinct().ToList();
         }
 
-        private void InitOptions(List<Book> books)
+        private void FilterAuthors(List<Book> inputs)
         {
-            EnsureArg.IsNotNull(books);
-            this.HotFactors = new List<Expression<Func<Book, bool>>>()
-                {
-                    t => books.Any(x => x.Categories == t.Categories),
-                    t => books.Any(x => x.MaturityRating == t.MaturityRating),
-                    t => books.Any(x => x.LanguageCode == t.LanguageCode),
-                    t => books.Any(x => x.Country == t.Country),
-                };
+            var groups = inputs.GroupBy(x => x.Authors);
+            var threshold = (double)groups.Sum(group => group.Count()) / groups.Count();
+            this.Authors = groups.Where(group => group.Count() >= threshold).SelectMany(group => group.Select(x => x.Authors)).Where(x => x != null).Distinct().ToList();
+        }
 
-            this.WarmFactors = new List<Expression<Func<Book, bool>>>()
-                {
-                    t => books.Any(x => x.Authors == t.Authors),
-                    t => books.Any(x => x.Publisher == t.Publisher),
-                    t => books.Any(x => t.PublishedDate.Year < x.PublishedDate.Year + 50 && t.PublishedDate.Year > x.PublishedDate.Year - 50),
-                };
+        private void FilterPublisher(List<Book> inputs)
+        {
+            var groups = inputs.GroupBy(x => x.Country);
+            var threshold = (double)groups.Sum(group => group.Count()) / groups.Count();
+            this.Publisher = groups.Where(group => group.Count() >= threshold).SelectMany(group => group.Select(x => x.Publisher)).Where(x => x != null).Distinct().ToList();
+        }
 
-            this.ColdFactors = new List<Expression<Func<Book, bool>>>()
-                {
-                    t => books.Any(x => x.Title == t.Title),
-                    t => books.Any(x => x.Subtitle == t.Subtitle),
-                    t => books.Any(x => x.PageCount == t.PageCount),
-                    t => books.Any(x => x.ImageLink == t.ImageLink),
-                    t => books.Any(x => x.ContainsImageBubbles == t.ContainsImageBubbles),
-                    t => books.Any(x => x.PrintType == t.PrintType),
-                    t => books.Any(x => x.PreviewLink == t.PreviewLink),
-                    t => books.Any(x => x.PublicDomain == t.PublicDomain),
-                };
+        private void FilterPublishedDate(List<Book> inputs)
+        {
+            var groups = inputs.GroupBy(x => x.PublishedDate.ToNearistYear());
+            var threshold = (double)groups.Sum(group => group.Count()) / groups.Count();
+            this.PublishedYear = groups.Where(group => group.Count() >= threshold).SelectMany(group => group.Where(x => x != null).Select(x => x.PublishedDate.ToNearistYear())).Distinct().ToList();
         }
     }
 }

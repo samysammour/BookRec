@@ -10,8 +10,5 @@
         public Book Book { get; set; }
 
         public double Score { get; set; }
-
-        public void CalculateWeight(ContentBasedRecommenderOptions options)
-            => this.Score = options.HotFactorsSatisfactions(this.Book) + options.WarmFactorsSatisfactions(this.Book);
     }
 }

@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using BookRec.Common;
     using BookRec.Infrastructure.EntityFramework.Extensions;
     using BookRec.Infrastructure.EntityFramework.Models;
     using BookRec.Infrastructure.EntityFramework.Repositories;
@@ -27,23 +28,14 @@
             }
 
             var options = new ContentBasedRecommenderOptions(inputs);
+            var x = await (from book in this.repository.DbContext.Books
+                          let weight = options.HotFactorsSatisfaction(book) + options.WarmFactorsSatisfaction(book)
+                          where weight >= options.MinScore()
+                          where inputs.All(x => x.Id != book.Id)
+                          orderby weight descending
+                          select new PredicationModel { Book = book, Score = options.CalculateScore(weight) }).Take(10).ToSafeListAsync();
 
-            return await this.repository.GetQuery()
-                .Where(x => inputs.All(i => x.Id != i.Id))
-                .Where(options.AndExpressions())
-                .Where(options.OrExpressions())
-                .Take(1000)
-                .AsEnumerable()
-                .Select(entry =>
-                {
-                    var predication = new PredicationModel { Book = entry, Score = 0.0 };
-                    predication.CalculateWeight(options);
-                    return predication;
-                })
-                .OrderByDescending(x => x.Score)
-                .Take(10)
-                .AsQueryable()
-                .ToSafeListAsync();
+            return x;
         }
     }
 }

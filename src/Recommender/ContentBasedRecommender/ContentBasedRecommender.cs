@@ -20,11 +20,11 @@
             this.repository = repository;
         }
 
-        public async Task<List<PredicationModel>> GetPredicationsByBooksAsync(List<Book> inputs)
+        public async Task<List<PredictionModel>> GetPredicationsByBooksAsync(List<Book> inputs)
         {
             if (inputs == null || !inputs.Any())
             {
-                return new List<PredicationModel>();
+                return new List<PredictionModel>();
             }
 
             var options = new ContentBasedRecommenderOptions(inputs);
@@ -33,7 +33,7 @@
                           where weight >= options.MinScore()
                           where inputs.All(x => x.Id != book.Id)
                           orderby weight descending
-                          select new PredicationModel { Book = book, Score = options.CalculateScore(weight) }).Take(10).ToSafeListAsync();
+                          select new PredictionModel { Book = book, Score = options.CalculateScore(weight) }).Take(10).ToSafeListAsync();
 
             return x;
         }

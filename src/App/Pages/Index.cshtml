@@ -35,13 +35,13 @@
     <img src="~/img/loading.gif" width="80" />
 </div>
 
-@if (Model.Predications != null && Model.Predications.Any())
+@if (Model.Predictions != null && Model.Predictions.Any())
 {
     <br />
     <h2>We recommend:</h2>
     <hr class="hr-light" />
     <div class="row">
-        @foreach (var predication in Model.Predications)
+        @foreach (var predication in Model.Predictions)
         {
             <div class="col-lg-4 col-md-6 col-12">
                 <div class="product-grid">

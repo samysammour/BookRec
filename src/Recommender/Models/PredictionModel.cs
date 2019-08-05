@@ -5,7 +5,7 @@
     using System.Text;
     using BookRec.Recommender;
 
-    public class PredicationModel
+    public class PredictionModel
     {
         public Book Book { get; set; }
 

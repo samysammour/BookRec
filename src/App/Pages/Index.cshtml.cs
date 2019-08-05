@@ -33,7 +33,7 @@
             this.hybridRecommender = hybridRecommender;
         }
 
-        public List<PredicationModel> Predications { get; set; }
+        public List<PredictionModel> Predictions { get; set; }
 
         public void OnGet()
         {
@@ -42,19 +42,19 @@
         public async Task OnPostFindCBFRecommendationAsync()
         {
             var inputs = await this.userBookRepository.GetByUsernameAsync(this.User.Identity.Name).ConfigureAwait(false);
-            this.Predications = await this.contentBasedRecommender.GetPredicationsByBooksAsync(inputs.Select(x => x.Book).ToList()).ConfigureAwait(false);
+            this.Predictions = await this.contentBasedRecommender.GetPredicationsByBooksAsync(inputs.Select(x => x.Book).ToList()).ConfigureAwait(false);
         }
 
         public async Task OnPostFindCFRecommendationAsync()
         {
             var inputs = await this.userBookRepository.GetByUsernameAsync(this.User.Identity.Name).ConfigureAwait(false);
-            this.Predications = await this.collaborativeRecommender.GetPredicationsByBooksAsync(inputs.ToList(), this.User.Identity.Name).ConfigureAwait(false);
+            this.Predictions = await this.collaborativeRecommender.GetPredicationsByBooksAsync(inputs.ToList(), this.User.Identity.Name).ConfigureAwait(false);
         }
 
         public async Task OnPostFindHFRecommendationAsync()
         {
             var inputs = await this.userBookRepository.GetByUsernameAsync(this.User.Identity.Name).ConfigureAwait(false);
-            this.Predications = await this.hybridRecommender.GetPredicationsByBooksAsync(inputs.ToList(), this.User.Identity.Name).ConfigureAwait(false);
+            this.Predictions = await this.hybridRecommender.GetPredicationsByBooksAsync(inputs.ToList(), this.User.Identity.Name).ConfigureAwait(false);
         }
     }
 }

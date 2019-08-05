@@ -23,7 +23,7 @@
             this.collaborativeRecommender = collaborativeRecommender;
         }
 
-        public async Task<List<PredicationModel>> GetPredicationsByBooksAsync(List<UserBook> inputs, string username)
+        public async Task<List<PredictionModel>> GetPredicationsByBooksAsync(List<UserBook> inputs, string username)
         {
             var cbfTask = this.contentBasedRecommender.GetPredicationsByBooksAsync(inputs.Select(x => x.Book).ToList());
             var cfTask = this.collaborativeRecommender.GetPredicationsByBooksAsync(inputs, username);
@@ -39,7 +39,7 @@
                     return group.FirstOrDefault();
                 }
 
-                return new PredicationModel()
+                return new PredictionModel()
                 {
                     Book = group.FirstOrDefault().Book,
                     Score = group.Sum(x => x.Score) / group.Count()

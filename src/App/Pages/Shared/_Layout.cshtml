@@ -6,9 +6,11 @@
     <title>@ViewData["Title"] - BookRec</title>
 
     <environment include="Development">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.css" />
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     </environment>
     <environment exclude="Development">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.css" />
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     </environment>
     <link href="~/lib/font-awesome/css/all.css" rel="stylesheet" />
@@ -32,6 +34,9 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="Book" asp-page="/Index">My books</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="Charts" asp-page="/Index">Charts</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -51,12 +56,14 @@
     </footer>
 
     <environment include="Development">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/jquery-ui/jquery-ui.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
     </environment>
 
     <environment exclude="Development">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
                 asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
                 asp-fallback-test="window.jQuery"
@@ -73,7 +80,7 @@
                 asp-fallback-src="~/lib/jquery-ui/jquery-ui.min.js"
                 asp-fallback-test="window.jQuery"
                 integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
-                crossorigin="anonymous"></script>
+                crossorigin="anonymous">
         </script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"
                 asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"

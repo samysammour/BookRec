@@ -21,7 +21,7 @@
             this.repository = repository;
         }
 
-        public async Task<List<PredicationModel>> GetPredicationsByBooksAsync(List<UserBook> inputs, string username)
+        public async Task<List<PredictionModel>> GetPredicationsByBooksAsync(List<UserBook> inputs, string username)
         {
             var helper = new CollaborativeRecommenderHelper(inputs);
             var userGroups = await (from userBook in this.repository.DbContext.UserBooks.Include(x => x.Book)
@@ -53,7 +53,7 @@
             return outputWeights.GroupBy(x => x.Book.Id)
                     .Select(group =>
                     {
-                        var prediction = new PredicationModel()
+                        var prediction = new PredictionModel()
                         {
                             Book = group.FirstOrDefault().Book
                         };

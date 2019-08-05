@@ -6,6 +6,6 @@
 
     public interface IHybridRecommender
     {
-        Task<List<PredicationModel>> GetPredicationsByBooksAsync(List<UserBook> inputs, string username);
+        Task<List<PredictionModel>> GetPredicationsByBooksAsync(List<UserBook> inputs, string username);
     }
 }

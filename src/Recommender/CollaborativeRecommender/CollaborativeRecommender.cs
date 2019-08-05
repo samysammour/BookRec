@@ -4,11 +4,9 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using BookRec.Common;
     using BookRec.Infrastructure.EntityFramework.Extensions;
     using BookRec.Infrastructure.EntityFramework.Models;
     using BookRec.Infrastructure.EntityFramework.Repositories;
-    using BookRec.Recommender.Models;
     using EnsureThat;
     using Microsoft.EntityFrameworkCore;
 

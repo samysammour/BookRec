@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using BookRec.Infrastructure.EntityFramework.Models;
-    using BookRec.Recommender.Models;
     using EnsureThat;
 
     public class CollaborativeRecommenderHelper

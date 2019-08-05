@@ -25,6 +25,13 @@
                 return new CollaborativeRecommender(repository);
             });
 
+            services.TryAddScoped<IHybridRecommender>(sp =>
+            {
+                var cbf = sp.GetService<IContentBasedRecommender>();
+                var cf = sp.GetService<ICollaborativeRecommender>();
+                return new HybridRecommender(cbf, cf);
+            });
+
             return services;
         }
     }

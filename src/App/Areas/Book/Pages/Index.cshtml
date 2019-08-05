@@ -8,6 +8,7 @@
 
 <div class="row justify-content-md-center">
     <div class="col-6">
+        <h5>Search for books</h5>
         <form class="ui-widget input-group">
             <input class="form-control" type="text" autocomplete="off" id="book-autocomplete" placeholder="Search books..." aria-label="Search">
             <button class="btn" type="button" id="book-clear">
@@ -26,36 +27,64 @@
 <hr />
 @if (Model.UserBooks != null && Model.UserBooks.Any())
 {
-    <div class="card-columns">
+    <div class="row">
         @foreach (var userBook in Model.UserBooks)
         {
-            <div class="card card-block">
-                @if (string.IsNullOrEmpty(userBook.Book.ImageLink))
-                {
-                    <img class="card-img-top img-fluid" src="~/img/no_image.png" alt="@userBook.Book.Title" title="@userBook.Book.Title">
-                }
-                else
-                {
-                    <img class="card-img-top img-fluid" src="@userBook.Book.ImageLink" alt="@userBook.Book.Title" title="@userBook.Book.Title">
-                }
-
-                <i class="fa fa-times delete-book-icon " data-id="@userBook.Book.Id" onclick="deleteBook(this)"></i>
-
-                <div class="card-body">
-                    <h5 class="card-title">@userBook.Book.Title</h5>
-                    <p class="card-text">@userBook.Book.Subtitle</p>
-                    <p class="card-text">Category: <b>@userBook.Book.Categories</b></p>
-                    <p class="card-text">Language: @userBook.Book.LanguageCode</p>
-                    <p class="card-text">Author: @userBook.Book.Authors</p>
-                </div>
-
-                <div class="card-footer">
-                    <i class="rating fa fa-star @(userBook.Rating >= 1 ? "star-active" : "star-inactive")" data-id="@userBook.Book.Id" onclick="updateRating(this, 1)"></i>
-                    <i class="rating fa fa-star @(userBook.Rating >= 2 ? "star-active" : "star-inactive")" data-id="@userBook.Book.Id" onclick="updateRating(this, 2)"></i>
-                    <i class="rating fa fa-star @(userBook.Rating >= 3 ? "star-active" : "star-inactive")" data-id="@userBook.Book.Id" onclick="updateRating(this, 3)"></i>
-                    <i class="rating fa fa-star @(userBook.Rating >= 4 ? "star-active" : "star-inactive")" data-id="@userBook.Book.Id" onclick="updateRating(this, 4)"></i>
-                    <i class="rating fa fa-star @(userBook.Rating >= 5 ? "star-active" : "star-inactive")" data-id="@userBook.Book.Id" onclick="updateRating(this, 5)"></i>
-                    <a href="@userBook.Book.PreviewLink" target="_blank" class="btn btn-link">Visit</a>
+            <div class="col-lg-4 col-md-6 col-12">
+                <div class="product-grid">
+                    <div class="product-image">
+                        @if (string.IsNullOrEmpty(userBook.Book.ImageLink))
+                        {
+                            <img src="~/img/no_image.png" alt="@userBook.Book.Title" title="@userBook.Book.Title">
+                        }
+                        else
+                        {
+                            <img src="@userBook.Book.ImageLink" alt="@userBook.Book.Title" title="@userBook.Book.Title">
+                        }
+                        <span class="product-new-label delete"><i class="fa fa-times" data-id="@userBook.Book.Id" onclick="deleteBook(this)"></i></span>
+                    </div>
+                    <div class="product-content bg-primary">
+                        <a href="@userBook.Book.PreviewLink" target="_blank" class="preview-link">
+                            <p class="title">@userBook.Book.Title</p>
+                        </a>
+                        <table class="text-left table table-borderless">
+                            <tr>
+                                <td>Category</td>
+                                <td>@userBook.Book.Categories</td>
+                            </tr>
+                            <tr>
+                                <td>Language</td>
+                                <td>@(userBook.Book.LanguageCode == "en" ? "English" : "German")</td>
+                            </tr>
+                            <tr>
+                                <td>Country</td>
+                                <td> @(userBook.Book.Country == "DE" ? "Germany" : "Britin")</td>
+                            </tr>
+                            <tr>
+                                <td>Mature Rating</td>
+                                <td>@userBook.Book.MaturityRating.Replace("_", " ")</td>
+                            </tr>
+                            <tr>
+                                <td>Author</td>
+                                <td>@userBook.Book.Authors</td>
+                            </tr>
+                            <tr>
+                                <td>Publisher</td>
+                                <td>@userBook.Book.Publisher</td>
+                            </tr>
+                            <tr>
+                                <td>Publish date</td>
+                                <td>@userBook.Book.PublishedDate.Date.ToString("dd.MM.yyyy")</td>
+                            </tr>
+                        </table>
+                        <ul class="rating">
+                            <li class="fa fa-star @(userBook.Rating >= 1 ? "" : "disable")" data-id="@userBook.Book.Id" onclick="updateRating(this, 1)"></li>
+                            <li class="fa fa-star @(userBook.Rating >= 2 ? "" : "disable")" data-id="@userBook.Book.Id" onclick="updateRating(this, 2)"></li>
+                            <li class="fa fa-star @(userBook.Rating >= 3 ? "" : "disable")" data-id="@userBook.Book.Id" onclick="updateRating(this, 3)"></li>
+                            <li class="fa fa-star @(userBook.Rating >= 4 ? "" : "disable")" data-id="@userBook.Book.Id" onclick="updateRating(this, 4)"></li>
+                            <li class="fa fa-star @(userBook.Rating >= 5 ? "" : "disable")" data-id="@userBook.Book.Id" onclick="updateRating(this, 5)"></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         }
@@ -117,11 +146,14 @@
             });
             }
 
-    function deleteBook(self) {
-            var id = $(self).data("id");
-            $.get(`/book/index?handler=delete&id=${id}`, function (data) {
-                window.location.reload();
-            });
+        function deleteBook(self) {
+            if (confirm("Are you sure you want to delete this book from your library")) {
+                var id = $(self).data("id");
+                $.get(`/book/index?handler=delete&id=${id}`, function (data) {
+                    window.location.reload();
+                });
+
+            }
         }
     </script>
 }

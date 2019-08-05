@@ -2,57 +2,60 @@
 for details on configuring this project to bundle and minify static web assets. */
 
 a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
 }
 
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
+
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .border-top {
-  border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #e5e5e5;
 }
+
 .border-bottom {
-  border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
 }
 
 .box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
 
 button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
+    font-size: 1rem;
+    line-height: inherit;
 }
 
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
 }
+
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  /* Set the fixed height of the footer here */
-  height: 60px;
-  line-height: 60px; /* Vertically center the text there */
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    line-height: 60px; /* Vertically center the text there */
 }
 
 
@@ -143,7 +146,7 @@ body {
 }
 
 .rating {
-    cursor:pointer;
+    cursor: pointer;
 }
 
 .delete-book-icon {
@@ -166,14 +169,133 @@ body {
     }
 
 .recommender-form {
-    width: 20%;
     display: inline-block;
 }
 
-.score-badge {
-    cursor: pointer;
-    position: absolute;
-    top: 5px;
-    left: 5px;
+    .recommender-form button {
+        width: 250px;
+    }
+
+@media screen and (max-width: 992px) {
+    recommender-form button {
+        width: 200px;
+    }
+}
+
+.product-grid {
+    /*font-family: Raleway,sans-serif;*/
+    text-align: center;
+    border: 1px solid rgba(0,0,0,.1);
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+    margin: 6px auto;
+}
+
+    .product-grid .product-image {
+        position: relative;
+    }
+
+    .product-grid .product-image {
+        display: block
+    }
+
+        .product-grid .product-image img {
+            width: 100%;
+            height: auto
+        }
+
+    .product-grid .product-discount-label, .product-grid .product-new-label {
+        color: #fff;
+        background-color: #ef5777;
+        font-size: 13pt;
+        text-transform: uppercase;
+        padding: 2px 7px;
+        display: block;
+        position: absolute;
+        top: 10px;
+        left: 0
+    }
+
+    .product-grid .product-discount-label {
+        background-color: #333;
+        left: auto;
+        right: 0
+    }
+
+.product-new-label.delete {
+    padding-right: 10px;
+}
+
+    .product-new-label.delete:hover {
+        cursor: pointer;
+        background: #bf546a;
+    }
+
+.product-grid .rating {
+    color: #FFD200;
+    font-size: 17pt;
+    padding: 12px 0 0;
+    margin: 0;
+    list-style: none;
+}
+
+    .product-grid .rating li.disable {
+        color: #e8e8e8;
+    }
+
+.product-grid .product-content {
+    text-align: center;
+    padding: 12px 0;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    color: #fff;
+}
+
+.product-grid .title {
     font-size: 13pt;
+    font-weight: 400;
+    letter-spacing: .5px;
+    text-transform: capitalize;
+    margin: 0 0 10px;
+}
+
+.product-grid .title {
+    color: #f1f1f1;
+}
+
+.product-grid .factors {
+    color: #c4c4c4;
+    font-size: 11pt;
+    font-family: Montserrat,sans-serif;
+    font-weight: 700;
+    letter-spacing: .6px;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.product-grid .price span {
+    color: #999;
+    font-size: 13px;
+    font-weight: 400;
+    text-decoration: line-through;
+    margin-left: 3px;
+    display: inline-block
+}
+
+.product-grid .preview-link {
+    font-size: 11pt;
+    font-weight: 600;
+}
+
+    .product-grid .preview-link:hover, .product-grid .preview-link:hover p {
+        color: #ef5777;
+    }
+
+@media only screen and (max-width:990px) {
+    .product-grid {
+        margin-bottom: 30px
+    }
 }

@@ -297,3 +297,13 @@ body {
         margin-bottom: 30px
     }
 }
+
+
+.chart-form button {
+    height: 50px;
+    margin: auto 5px;
+}
+
+.chart-form select {
+    width: 250px !important;
+}

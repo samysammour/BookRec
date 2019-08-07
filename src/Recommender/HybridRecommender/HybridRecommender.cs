@@ -25,6 +25,7 @@
 
         public async Task<List<PredictionModel>> GetPredicationsByBooksAsync(List<UserBook> inputs, string username)
         {
+            var options = new HybridRecommenderOptions();
             var cbfTask = this.contentBasedRecommender.GetPredicationsByBooksAsync(inputs.Select(x => x.Book).ToList());
             var cfTask = this.collaborativeRecommender.GetPredicationsByBooksAsync(inputs, username);
 
@@ -32,19 +33,22 @@
 
             var cbfPrediction = cbfTask.Result;
             var cfPrediction = cfTask.Result;
-            return cbfPrediction.SafeConcat(cfPrediction).GroupBy(x => x.Book.Id).Select(group =>
-            {
-                if (group.Count() == 1)
-                {
-                    return group.FirstOrDefault();
-                }
 
-                return new PredictionModel()
-                {
-                    Book = group.FirstOrDefault().Book,
-                    Score = group.Sum(x => x.Score) / group.Count()
-                };
-            }).DistinctBy(x => x.Book.Id).OrderByDescending(x => x.Score).Take(10).ToList();
+            var output = cbfPrediction.Select(prediction => new PredictionModel()
+            {
+                Book = prediction.Book,
+                Score = options.CBFScore(prediction.Score)
+            }).SafeConcat(cfPrediction.Select(prediction => new PredictionModel()
+            {
+                Book = prediction.Book,
+                Score = options.CFScore(prediction.Score)
+            }));
+
+            return output.GroupBy(x => x.Book.Id).Select(group => new PredictionModel()
+            {
+                Book = group.FirstOrDefault().Book,
+                Score = group.Sum(x => x.Score)
+            }).OrderByDescending(x => x.Score).Take(10).ToList();
         }
     }
 }

@@ -1,6 +1,7 @@
 namespace BookRec.App.Areas.Charts.Pages
 {
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Threading.Tasks;
     using BookRec.App.Model;
@@ -34,31 +35,48 @@ namespace BookRec.App.Areas.Charts.Pages
 
         public List<ChartModel> Charts { get; set; } = new List<ChartModel>();
 
-        public string[] Labels { get; set; } = new string[] { };
+        public string Title { get; set; }
 
-        public double[] Values { get; set; } = new double[] { };
+        public int Type { get; set; }
 
-        public async Task OnGet()
+        public void OnGet()
         {
+        }
+
+        public async Task OnPostAsync(int type)
+        {
+            this.Title = type == 1 ? "Average Score" : "Execution Time in second";
+
             var inputs = await this.userBookRepository.GetByUsernameAsync(this.User.Identity.Name).ConfigureAwait(false);
+
+            var watch = Stopwatch.StartNew();
             var prediction = await this.contentBasedRecommender.GetPredicationsByBooksAsync(inputs.Select(x => x.Book).ToList()).ConfigureAwait(false);
+            watch.Stop();
+
             if (prediction != null)
             {
-                this.Charts.Add(new ChartModel() { Label = "CBF", Value = prediction.Sum(x => x.Score) / prediction.Count() });
+                this.Charts.Add(new ChartModel() { Label = "CBF", Value = type == 1 ? prediction.Sum(x => x.Score) / prediction.Count() : watch.ElapsedMilliseconds / 1000 });
             }
 
-            inputs = await this.userBookRepository.GetByUsernameAsync(this.User.Identity.Name).ConfigureAwait(false);
+            watch = Stopwatch.StartNew();
             prediction = await this.collaborativeRecommender.GetPredicationsByBooksAsync(inputs, this.User.Identity.Name).ConfigureAwait(false);
+            watch.Stop();
+
             if (prediction != null)
             {
-                this.Charts.Add(new ChartModel() { Label = "CF", Value = prediction.Sum(x => x.Score) / prediction.Count() });
+                this.Charts.Add(new ChartModel() { Label = "CF", Value = type == 1 ? prediction.Sum(x => x.Score) / prediction.Count() : watch.ElapsedMilliseconds / 1000 });
             }
 
-            inputs = await this.userBookRepository.GetByUsernameAsync(this.User.Identity.Name).ConfigureAwait(false);
-            prediction = await this.hybridRecommender.GetPredicationsByBooksAsync(inputs, this.User.Identity.Name).ConfigureAwait(false);
-            if (prediction != null)
+            if (type == 1)
             {
-                this.Charts.Add(new ChartModel() { Label = "HF", Value = prediction.Sum(x => x.Score) / prediction.Count() });
+                watch = Stopwatch.StartNew();
+                prediction = await this.hybridRecommender.GetPredicationsByBooksAsync(inputs, this.User.Identity.Name).ConfigureAwait(false);
+                watch.Stop();
+
+                if (prediction != null)
+                {
+                    this.Charts.Add(new ChartModel() { Label = "HF", Value = type == 1 ? prediction.Sum(x => x.Score) / prediction.Count() : watch.ElapsedMilliseconds / 1000 });
+                }
             }
         }
     }

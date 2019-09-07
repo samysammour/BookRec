@@ -29,11 +29,15 @@
 
             var options = new ContentBasedRecommenderOptions(inputs);
             return await (from book in this.repository.DbContext.Books
-                          let weight = options.HotFactorsSatisfaction(book) + options.WarmFactorsSatisfaction(book)
-                          where weight >= options.MinScore()
+                          let weight = options.HotFactorsSatisfaction(book) +
+                                       options.WarmFactorsSatisfaction(book)
+                          where weight >= options.MinimumWeight()
                           where inputs.All(x => x.Id != book.Id)
-                          orderby weight descending
-                          select new PredictionModel { Book = book, Score = options.CalculateScore(weight) }).Take(10).ToSafeListAsync();
+                          select new PredictionModel
+                          {
+                              Book = book,
+                              Score = options.CalculateScore(weight)
+                          }).OrderByDescending(x => x.Score).Take(10).ToSafeListAsync();
         }
     }
 }

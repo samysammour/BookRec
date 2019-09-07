@@ -24,29 +24,26 @@
         public async Task<List<PredictionModel>> GetPredicationsByBooksAsync(List<UserBook> inputs, string username)
         {
             var helper = new CollaborativeRecommenderHelper(inputs);
+
             var userGroups = await (from userBook in this.repository.DbContext.UserBooks.Include(x => x.Book)
                                     join book in this.repository.DbContext.Books on userBook.BookId equals book.Id
-                                    where (from subUserBook in this.repository.DbContext.UserBooks
-                                           join subBook in this.repository.DbContext.Books on subUserBook.BookId equals subBook.Id
-                                           where helper.Ids.Any(id => id == subUserBook.BookId) && subUserBook.Username != username
-                                           select subUserBook.Username).Distinct().Contains(userBook.Username)
+                                    where userBook.Username != username
                                     group userBook by userBook.Username into userGroup
                                     select new
                                     {
                                                 Group = userGroup,
-                                                Temperature = helper.CalculateUTM(userGroup),
-                                                Nos = helper.CalculateNOS(userGroup)
+                                                Temperature = helper.CalculateUTM(userGroup)
                                     })
                              .OrderByDescending(x => x.Temperature).Take(500).ToSafeListAsync();
 
             var outputWeights = userGroups.SelectMany(group =>
             {
-                return group.Group.Where(x => !helper.Ids.Contains(x.BookId))
+                return group.Group.Where(x => !helper.Inputs.ContainsKey(x.BookId))
                         .Select(item => new
                         {
                             item.Book,
                             Score = helper.CalculateOPW(group.Temperature, item.Rating),
-                            group.Nos
+                            group.Temperature
                         });
             });
 
@@ -64,7 +61,9 @@
                         }
                         else
                         {
-                            prediction.Score = (double)(group.Sum(x => x.Nos * x.Score) / group.Count());
+                            var maxWeight = group.Max(x => x.Score);
+                            var imv = (1 - maxWeight) / group.Count();
+                            prediction.Score = (double)maxWeight + group.Sum(x => imv * x.Temperature);
                         }
 
                         return prediction;

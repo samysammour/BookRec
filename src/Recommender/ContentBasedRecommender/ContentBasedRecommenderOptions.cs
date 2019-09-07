@@ -37,16 +37,18 @@
 
         public double HotFactorsSatisfaction(Book book)
             => (this.Categories.Any(x => x == book.Categories) ? 1 : 0) +
-                (this.LanguageCode.Any(x => x == book.LanguageCode) ? 1 : 0) +
-                (this.Country.Any(x => x == book.Country) ? 1 : 0) +
-                (this.MaturityRating.Any(x => x == book.MaturityRating) ? 1 : 0);
+               (this.LanguageCode.Any(x => x == book.LanguageCode) ? 1 : 0) +
+               (this.Country.Any(x => x == book.Country) ? 1 : 0) +
+               (this.MaturityRating.Any(x => x == book.MaturityRating) ? 1 : 0);
 
         public double WarmFactorsSatisfaction(Book book)
             => (this.Authors.Any(x => x == book.Authors) ? 0.5 : 0) +
                 (this.Publisher.Any(x => x == book.Publisher) ? 0.5 : 0) +
-                (this.PublishedYear.Any(x => book.PublishedDate.ToNearistYear() == x) ? 0.5 : 0);
+                (this.PublishedYear.Any(x => book.PublishedDate.ToNearistCentury() == x) ? 0.5 : 0);
 
-        public double MinScore() => 4;
+        public double MinimumWeight() => 4;
+
+        public double TotalWeight() => 4;
 
         public double CalculateScore(double weight) => weight / 5.5;
 
@@ -54,7 +56,9 @@
         {
             var groups = inputs.GroupBy(x => x.Categories);
             var threshold = (double)groups.Sum(group => group.Count()) / groups.Count();
-            this.Categories = groups.Where(group => group.Count() >= threshold).SelectMany(group => group.Select(x => x.Categories)).Where(x => x != null).Distinct().ToList();
+            this.Categories = groups.Where(group => group.Count() >= threshold)
+                                    .SelectMany(group => group.Select(x => x.Categories))
+                                    .Where(x => x != null).Distinct().ToList();
         }
 
         private void FilterMaturityRating(List<Book> inputs)
@@ -94,9 +98,9 @@
 
         private void FilterPublishedDate(List<Book> inputs)
         {
-            var groups = inputs.GroupBy(x => x.PublishedDate.ToNearistYear());
+            var groups = inputs.GroupBy(x => x.PublishedDate.ToNearistCentury());
             var threshold = (double)groups.Sum(group => group.Count()) / groups.Count();
-            this.PublishedYear = groups.Where(group => group.Count() >= threshold).SelectMany(group => group.Where(x => x != null).Select(x => x.PublishedDate.ToNearistYear())).Distinct().ToList();
+            this.PublishedYear = groups.Where(group => group.Count() >= threshold).SelectMany(group => group.Where(x => x != null).Select(x => x.PublishedDate.ToNearistCentury())).Distinct().ToList();
         }
     }
 }

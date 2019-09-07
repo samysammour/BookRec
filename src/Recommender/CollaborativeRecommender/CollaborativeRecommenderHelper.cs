@@ -12,15 +12,14 @@
         {
             EnsureArg.IsNotNull(inputs);
 
-            this.CalculateNoi(inputs);
-            this.CalculateTTM(inputs);
-            this.SetIds(inputs);
+            this.CalculateTotalRating(inputs);
+            this.SetInputs(inputs);
         }
 
         /// <summary>
         /// Number of Inputs
         /// </summary>
-        public int NOI { get; set; }
+        public int TotalRating { get; set; }
 
         /// <summary>
         /// Total Temperature
@@ -28,9 +27,9 @@
         public int TTM { get; set; }
 
         /// <summary>
-        /// Input ids
+        /// Inputs
         /// </summary>
-        public List<Guid> Ids { get; set; }
+        public Dictionary<Guid, int> Inputs { get; set; } = new Dictionary<Guid, int>();
 
         /// <summary>
         /// Caclculate User Temperature (UTM)
@@ -38,15 +37,11 @@
         /// <param name="userGroup">All books read by the user</param>
         /// <returns>UTM</returns>
         public double CalculateUTM(IGrouping<string, UserBook> userGroup)
-            => (double)userGroup.Where(x => this.Ids.Contains(x.BookId)).Sum(x => x.Rating * this.NOI) / this.TTM;
-
-        /// <summary>
-        /// Calculate Number of Similiraty between the user and the input set (NOS)
-        /// </summary>
-        /// <param name="userGroup">All books read by the user</param>
-        /// <returns>NOS</returns>
-        public int CalculateNOS(IGrouping<string, UserBook> userGroup)
-            => userGroup.Where(ub => this.Ids.Contains(ub.BookId)).Count();
+            => (double)1 - this.Inputs.Select(input =>
+            {
+                var book = userGroup.FirstOrDefault(x => x.BookId == input.Key);
+                return book == null ? input.Value : input.Value - book.Rating;
+            }).Sum(value => (double)value / this.TotalRating);
 
         /// <summary>
         /// Calculate the output weight of a prediction (OPW)
@@ -61,21 +56,14 @@
         /// Calculate the number of inputs (NOI)
         /// </summary>
         /// <param name="inputs">Input set</param>
-        private void CalculateNoi(List<UserBook> inputs)
-            => this.NOI = inputs.Count();
-
-        /// <summary>
-        /// Calculate the total temperature (TTM)
-        /// </summary>
-        /// <param name="inputs">Input set</param>
-        private void CalculateTTM(List<UserBook> inputs)
-            => this.TTM = inputs.Sum(x => x.Rating * inputs.Count());
+        private void CalculateTotalRating(List<UserBook> inputs)
+            => this.TotalRating = inputs.Sum(x => x.Rating);
 
         /// <summary>
         /// Set input ids
         /// </summary>
         /// <param name="inputs">Input set</param>
-        private void SetIds(List<UserBook> inputs)
-            => this.Ids = inputs.Select(x => x.BookId).Distinct().ToList();
+        private void SetInputs(List<UserBook> inputs)
+            => inputs.ForEach(x => this.Inputs.Add(x.BookId, x.Rating));
     }
 }

@@ -26,6 +26,7 @@
         public async Task<List<PredictionModel>> GetPredicationsByBooksAsync(List<UserBook> inputs, string username)
         {
             var options = new HybridRecommenderOptions();
+
             var cbfTask = this.contentBasedRecommender.GetPredicationsByBooksAsync(inputs.Select(x => x.Book).ToList());
             var cfTask = this.collaborativeRecommender.GetPredicationsByBooksAsync(inputs, username);
 
@@ -34,14 +35,14 @@
             var cbfPrediction = cbfTask.Result;
             var cfPrediction = cfTask.Result;
 
-            var output = cbfPrediction.Select(prediction => new PredictionModel()
+            var output = cbfPrediction.Select(prediction =>
             {
-                Book = prediction.Book,
-                Score = options.CBFScore(prediction.Score)
-            }).SafeConcat(cfPrediction.Select(prediction => new PredictionModel()
+                prediction.Score = options.CBFScore(prediction.Score);
+                return prediction;
+            }).SafeConcat(cfPrediction.Select(prediction =>
             {
-                Book = prediction.Book,
-                Score = options.CFScore(prediction.Score)
+                prediction.Score = options.CFScore(prediction.Score);
+                return prediction;
             }));
 
             return output.GroupBy(x => x.Book.Id).Select(group => new PredictionModel()

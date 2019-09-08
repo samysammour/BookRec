@@ -71,7 +71,7 @@
                 var repository = new UserBookRepository(context);
                 var sub = new CollaborativeRecommender(repository);
 
-                var prediction = await sub.GetPredicationsByBooksAsync(inputs, "User1").ConfigureAwait(false);
+                var prediction = await sub.GetPredicationsByBooksAsync(inputs, "InputUser").ConfigureAwait(false);
 
                 // assert
                 Assert.NotNull(prediction);
@@ -81,9 +81,9 @@
             }
         }
 
-        private List<UserBook> GetInputs() => this.InitialUserData().Take(3).ToList();
+        private List<UserBook> GetInputs() => this.InitialUserData().Where(x => x.Username == "InputUser").ToList();
 
-        private List<UserBook> GetFirstUser() => this.InitialUserData().Skip(3).Take(2).ToList();
+        private List<UserBook> GetFirstUser() => this.InitialUserData().Where(x => x.Username != "InputUser").GroupBy(x => x.Username).FirstOrDefault().Select(x => x).ToList();
 
         private List<Book> InitialBookData()
             => new List<Book>
@@ -101,21 +101,21 @@
                 new UserBook()
                 {
                     Id = "ba4cacac-3dda-4af3-c3cb-08d715cd23c8".ToGuid().Value,
-                    Username = "User1",
+                    Username = "InputUser",
                     Rating = 4,
                     BookId="2bde613c-7f2b-449b-8c1e-0511f9aa5702".ToGuid().Value
                 },
                 new UserBook()
                 {
                     Id = "5196d81e-d8c4-4cc8-c3cc-08d715cd23c8".ToGuid().Value,
-                    Username = "User1",
+                    Username = "InputUser",
                     Rating = 3,
                     BookId="b75de15d-8fc3-400a-dd98-08d6ff11e8e2".ToGuid().Value
                 },
                 new UserBook()
                 {
                     Id = "1ec69a48-f8f9-4b33-c3cd-08d715cd23c8".ToGuid().Value,
-                    Username = "User1",
+                    Username = "InputUser",
                     Rating = 4,
                     BookId="c2a48df5-ef5b-4752-8352-00326a1b60ac".ToGuid().Value
                 },

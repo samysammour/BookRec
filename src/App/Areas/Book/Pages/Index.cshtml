@@ -41,7 +41,7 @@
                         {
                             <img src="@userBook.Book.ImageLink" alt="@userBook.Book.Title" title="@userBook.Book.Title">
                         }
-                        <span class="product-new-label delete"><i class="fa fa-times" data-id="@userBook.Book.Id" onclick="deleteBook(this)"></i></span>
+                        <span class="product-new-label delete"><i class="fa fa-times" data-id="@userBook.Id" onclick="deleteBook(this)"></i></span>
                     </div>
                     <div class="product-content bg-primary">
                         <a href="@userBook.Book.PreviewLink" target="_blank" class="preview-link">
@@ -78,11 +78,11 @@
                             </tr>
                         </table>
                         <ul class="rating">
-                            <li class="fa fa-star @(userBook.Rating >= 1 ? "" : "disable")" data-id="@userBook.Book.Id" onclick="updateRating(this, 1)"></li>
-                            <li class="fa fa-star @(userBook.Rating >= 2 ? "" : "disable")" data-id="@userBook.Book.Id" onclick="updateRating(this, 2)"></li>
-                            <li class="fa fa-star @(userBook.Rating >= 3 ? "" : "disable")" data-id="@userBook.Book.Id" onclick="updateRating(this, 3)"></li>
-                            <li class="fa fa-star @(userBook.Rating >= 4 ? "" : "disable")" data-id="@userBook.Book.Id" onclick="updateRating(this, 4)"></li>
-                            <li class="fa fa-star @(userBook.Rating >= 5 ? "" : "disable")" data-id="@userBook.Book.Id" onclick="updateRating(this, 5)"></li>
+                            <li class="fa fa-star @(userBook.Rating >= 1 ? "" : "disable")" data-id="@userBook.Id" onclick="updateRating(this, 1)"></li>
+                            <li class="fa fa-star @(userBook.Rating >= 2 ? "" : "disable")" data-id="@userBook.Id" onclick="updateRating(this, 2)"></li>
+                            <li class="fa fa-star @(userBook.Rating >= 3 ? "" : "disable")" data-id="@userBook.Id" onclick="updateRating(this, 3)"></li>
+                            <li class="fa fa-star @(userBook.Rating >= 4 ? "" : "disable")" data-id="@userBook.Id" onclick="updateRating(this, 4)"></li>
+                            <li class="fa fa-star @(userBook.Rating >= 5 ? "" : "disable")" data-id="@userBook.Id" onclick="updateRating(this, 5)"></li>
                         </ul>
                     </div>
                 </div>

@@ -194,7 +194,7 @@
         private void SeedData(BookRecContext context)
         {
             context.UserBooks.RemoveRange(context.UserBooks);
-
+            context.Books.RemoveRange(context.Books);
             context.UserBooks.AddRange(this.InitialUserData());
             context.SaveChanges();
         }
